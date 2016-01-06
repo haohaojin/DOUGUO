@@ -15,7 +15,7 @@ headers = (
     'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.64 Safari/537.11')
 
 
-# web scraping page 121
+# web scraping page 137
 
 
 def getAttributes(url):
@@ -49,6 +49,21 @@ def getAttributes(url):
     except AttributeError as e:
         return None
 
+def getRecipeDetail(url):
+    recipeDetail = []
+    try:
+        html = urllib.request.urlopen(url)
+    except HTTPError as e:
+        return None
+    try:
+        bsObj = BeautifulSoup(html.read(), "html.parser")
+        bookmark = bsObj.find_all("span", {"id": "collectsnum"})  # .parent.previous_sibling.get_text()
+        recipeDetail.append(bookmark[0].getText())
+        visit = title = bsObj.find_all("span", {"id": "collectsnum"})[0].previous_sibling.previous_sibling.getText()
+        recipeDetail.append(visit)
+        return recipeDetail
+    except AttributeError as e:
+        return None
 
 def getBookmark(url):
     try:
@@ -113,14 +128,15 @@ def getRecipe(user, url):
             recipe_url = recipe.find("a").attrs['href']
             created_date = datetime.date(int(year_final), int(month), int(day))
             diff = today - created_date
-            visited = getVisit(recipe_url)
-            bookmarked = getBookmark(recipe_url)
+            recipeDetail = getRecipeDetail(recipe_url)
+            visited = recipeDetail[1]
+            bookmarked = recipeDetail[0]
             name = recipe.getText().replace('"', '""')
             link = recipe.find("a").attrs['href']
-            # print(user + "|" + today.strftime('%Y/%m/%d') + "|" + created_date.strftime(
-            #     '%Y/%m/%d') + "|" + visited + "|" + bookmarked + "|" + name + "|" + link)
-            writer.writerow((user, today.strftime('%Y/%m/%d'), created_date.strftime('%Y/%m/%d'), visited, bookmarked,
-                             name, link))
+            print(user + "|" + today.strftime('%Y/%m/%d') + "|" + created_date.strftime(
+                '%Y/%m/%d') + "|" + visited + "|" + bookmarked + "|" + name + "|" + link)
+            # writer.writerow((user, today.strftime('%Y/%m/%d'), created_date.strftime('%Y/%m/%d'), visited, bookmarked,
+            #                  name, link))
             user_sql = '\"' + user + '\"'
             date = today.strftime('%Y-%m-%d')
             date_sql = '\"' + date + '\"'
@@ -168,12 +184,12 @@ for i in searchList:
     print(i, searchList[i])
     attributes = getAttributes(searchList[i].replace('/recipe', '.html'))
     # print(attributes)
-    with open("C:/Users/hao.jin/Desktop/Python/" + i + '-' + str(today) + ".csv", 'w', newline='',
-              encoding='UTF-8') as csvFile:
-        writer = csv.writer(csvFile)
-        writer.writerow(('User', 'Added Date', 'Created Date', 'Visited', 'Bookmarked', 'Name', 'Link'))
-        getRecipe(i, searchList[i])
-        csvFile.close()
+    # with open("C:/Users/hao.jin/Desktop/Python/" + i + '-' + str(today) + ".csv", 'w', newline='',
+    #           encoding='UTF-8') as csvFile:
+        # writer = csv.writer(csvFile)
+        # writer.writerow(('User', 'Added Date', 'Created Date', 'Visited', 'Bookmarked', 'Name', 'Link'))
+    getRecipe(i, searchList[i])
+        # csvFile.close()
     print("--- %s seconds ---" % (time.time() - start_time))
 
 cur.close()
