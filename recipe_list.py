@@ -35,7 +35,7 @@ def getAttributes(url):
         daren_flag = '#'
         daren_title = '#'
         daren_flag_list = bsObj.find_all("a", {"href": "/user/prodesc"})
-        if len(daren_flag_list) >0:
+        if len(daren_flag_list) > 0:
             daren_flag = 'C'
             daren_title_list = bsObj.find_all("span", {"class": "fss inblok fcc"})
             daren_title = daren_title_list[0].getText()
@@ -44,10 +44,11 @@ def getAttributes(url):
         result.append(jifen)
         result.append(daren_flag)
         result.append(daren_title)
-        #print(result)
+        # print(result)
         return result
     except AttributeError as e:
         return None
+
 
 def getBookmark(url):
     try:
@@ -83,7 +84,7 @@ def getRecipe(user, url):
     try:
         bsObj = BeautifulSoup(html.read(), "html.parser")
         h3list = bsObj.find_all("h3")
-        #print(len(h3list))
+        # print(len(h3list))
         for recipe in h3list:
             # if "圣诞" in recipe.getText() and "糖霜" in recipe.getText():
             # year = bsObj.find("span", {"class": "yearnum dblok"}).getText()[0:4]
@@ -102,9 +103,7 @@ def getRecipe(user, url):
                     year_final = year[len(year) - 1 - i].getText()[0:4]
                     # print(year_final)
                     break
-            # print(year[0].find_all_next().index(recipe))
-            # test = year.previous_sibling.find("span", {"class": "yearnum dblok"})
-            # print(test)
+
             month_temp = recipe.parent.parent.parent.find("span", {"class": "dblok pts"}).getText()
             if len(month_temp) == 3:
                 month = month_temp[0:2]
@@ -116,12 +115,12 @@ def getRecipe(user, url):
             diff = today - created_date
             visited = getVisit(recipe_url)
             bookmarked = getBookmark(recipe_url)
-            name = recipe.getText()
+            name = recipe.getText().replace('"', '""')
             link = recipe.find("a").attrs['href']
-            print(user + "|" + today.strftime('%Y/%m/%d') + "|" + created_date.strftime(
-                '%Y/%m/%d') + "|" + visited + "|" + bookmarked + "|" + name + "|" + link)
-            writer.writerow((user, today.strftime('%Y/%m/%d'), created_date.strftime('%Y/%m/%d'), visited,bookmarked, name, link))
-
+            # print(user + "|" + today.strftime('%Y/%m/%d') + "|" + created_date.strftime(
+            #     '%Y/%m/%d') + "|" + visited + "|" + bookmarked + "|" + name + "|" + link)
+            writer.writerow((user, today.strftime('%Y/%m/%d'), created_date.strftime('%Y/%m/%d'), visited, bookmarked,
+                             name, link))
             user_sql = '\"' + user + '\"'
             date = today.strftime('%Y-%m-%d')
             date_sql = '\"' + date + '\"'
@@ -129,21 +128,18 @@ def getRecipe(user, url):
             created_date_sql = '\"' + created_date + '\"'
             name_sql = '\"' + name + '\"'
             link_sql = '\"' + link + '\"'
+            fans = attributes[0]
+            friends = attributes[1]
+            jifen = attributes[2]
+            daren_flag = '\"' + attributes[3] + '\"'
+            daren_title = '\"' + attributes[4] + '\"'
 
-            sql = "REPLACE INTO `recipe` (`user`, `date`, `created_date`, `visited`, `bookmarked`, `name`, `link`) VALUES (" + user_sql + ", " + date_sql + ", " + created_date_sql + ", " + str(
-                    visited) + ", " + str(bookmarked) + ", " + name_sql + ", " + link_sql + ")"
-            #print(sql)
+            sql = "REPLACE INTO `recipe` (`user`, `date`, `created_date`, `visited`, `bookmarked`, `name`, `link`,`fans`,`friends`,`jifen`,`daren_flag`,`daren_title`) VALUES (" + user_sql + ", " + date_sql + ", " + created_date_sql + ", " + str(
+                    visited) + ", " + str(
+                bookmarked) + ", " + name_sql + ", " + link_sql + ", " + fans + ", " + friends + ", " + jifen + ", " + daren_flag + ", " + daren_title + ")"
+            # print(sql)
             cur.execute(sql)
             cur.connection.commit()
-
-            # print(visited)
-            # print(getVisit(recipe_url))
-            # print(bookmarked)
-            # print(getBookmark(recipe.find("a").attrs['href']))
-            # print(name)
-            # print(recipe.getText())
-            # print(link)
-            # print(recipe.find("a").attrs['href'])
 
         title = bsObj.find_all(lambda tag: tag.getText() == '下一页')
         if (len(title) != 0):
@@ -157,8 +153,9 @@ def getRecipe(user, url):
     except AttributeError as e:
         return None
 
-searchList = {'Breadmum': 'http://www.douguo.com/u/u30362766298239/recipe',
-              }
+
+searchList = {  'Breadmum': 'http://www.douguo.com/u/u30362766298239/recipe',
+}
 
 today = datetime.date.today()
 
@@ -169,8 +166,8 @@ cur.execute("USE breadmum_recipe")
 
 for i in searchList:
     print(i, searchList[i])
-    attributes = getAttributes(searchList[i].replace('/recipe','.html'))
-    #print(attributes)
+    attributes = getAttributes(searchList[i].replace('/recipe', '.html'))
+    # print(attributes)
     with open("C:/Users/hao.jin/Desktop/Python/" + i + '-' + str(today) + ".csv", 'w', newline='',
               encoding='UTF-8') as csvFile:
         writer = csv.writer(csvFile)
