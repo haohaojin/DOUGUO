@@ -170,8 +170,8 @@ def getRecipe(user, url):
         return None
 
 
-searchList = {  'Breadmum': 'http://www.douguo.com/u/u30362766298239/recipe',
-}
+searchList = {'Breadmum': 'http://www.douguo.com/u/u30362766298239/recipe',  #
+                  }
 
 today = datetime.date.today()
 
