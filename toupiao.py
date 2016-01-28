@@ -11,7 +11,9 @@ while size == 10:
     # http://m.douguo.com/ajax/dopull/209248/7200/26/
     # 417 维达
     # http://m.douguo.com/ajax/dopull/209240/7200/26/
-    res = requests.post(u'http://m.douguo.com/activity/recipecollect/ajaxGetMoreRecipe', data={"offset":position,"pid":417}) #173 is the last one
+    # 428 六月鲜
+    # http://m.douguo.com/ajax/dopull/210827/7200/26/
+    res = requests.post(u'http://m.douguo.com/activity/recipecollect/ajaxGetMoreRecipe', data={"offset":position,"pid":428}) #173 is the last one
     string = res.json()
 
     # print("status: " + string["status"])
