@@ -1,10 +1,39 @@
 # http://m.douguo.com/activity/recipecollect/ajaxGetMoreRecipe
 import requests
 
-res = requests.post(u'http://m.douguo.com/activity/recipecollect/ajaxGetMoreRecipe', data={"offset":188,"pid":419}) #173 is the last one
-string = res.json()
+size = 10
+position = 0
 
-print("status: " + string["status"])
-print(len(string["data"]))
+while size == 10:
+    # http://m.douguo.com/
+    # 542 沃康山
 
+    # /activity/newtry/trylist/'+id+'/'+offset
+    # res = requests.post(u'http://m.douguo.com/activity/recipecollect/ajaxGetMoreRecipe', data={"offset":position,"pid":542}) #173 is the last one
+    res = requests.post(u'http://m.douguo.com/activity/newtry/trylist/542/' + str(position))
+    string = res.json()
+    print(string)
 
+    # print("status: " + string["status"])
+    # print(len(string["data"]))
+
+    iter = range(0,len(string["data"]))
+    for i in iter:
+        recipe = string["data"][i]
+        data = recipe["recipe"]
+        user = data["user_info"]
+        if user["nickname"] == 'breadmum' or 1:
+            print("nickname: "+ user["nickname"])
+            print("name: " + str(data["name"]))
+            print("activity id: " + recipe["id"])
+            print("recipe id: " + str(data["id"]))
+            print("is_pull: " + str(recipe["is_pull"]))
+            print("pull_num: " + str(recipe["pull_num"]))
+            print("like_num: " + str(data["like_num"]))
+            print("view_num: " + str(data["view_num"]))
+            print("dish_num: " + str(data["dish_num"]))
+            print("image: " + str(data["image"]))
+            print("headicon: " + user["headicon"])
+            print()
+    size = len(string["data"])
+    position += 10
