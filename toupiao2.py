@@ -7,6 +7,8 @@ position = 0
 while size == 10:
     # http://m.douguo.com/
     # 542 沃康山
+    # http://m.douguo.com/ajax/dopull/212119/7200/26/
+    # http://m.douguo.com/ajax/dopull/212146/7200/26/
 
     # /activity/newtry/trylist/'+id+'/'+offset
     # res = requests.post(u'http://m.douguo.com/activity/recipecollect/ajaxGetMoreRecipe', data={"offset":position,"pid":542}) #173 is the last one
