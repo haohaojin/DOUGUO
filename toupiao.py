@@ -11,13 +11,15 @@ while size == 10:
     # http://m.douguo.com/ajax/dopull/209248/7200/26/
     # 428 六月鲜
     # http://m.douguo.com/ajax/dopull/210827/7200/26/
+    # 430 均衡年夜饭
+    # http://m.douguo.com/ajax/dopull/212391/7200/26/
 
     # Expired
     # 417 维达
     # /activity/newtry/trylist/'+id+'/'+offset
-    res = requests.post(u'http://m.douguo.com/activity/recipecollect/ajaxGetMoreRecipe', data={"offset":position,"pid":417}) #173 is the last one
+    res = requests.post(u'http://m.douguo.com/activity/recipecollect/ajaxGetMoreRecipe', data={"offset":position,"pid":430}) #173 is the last one
     string = res.json()
-    print(string)
+    # print(string)
 
     # print("status: " + string["status"])
     # print(len(string["data"]))
