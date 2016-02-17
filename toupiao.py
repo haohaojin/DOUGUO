@@ -17,7 +17,7 @@ while size == 10:
     # Expired
     # 417 维达
     # /activity/newtry/trylist/'+id+'/'+offset
-    res = requests.post(u'http://m.douguo.com/activity/recipecollect/ajaxGetMoreRecipe', data={"offset":position,"pid":430}) #173 is the last one
+    res = requests.post(u'http://m.douguo.com/activity/recipecollect/ajaxGetMoreRecipe', data={"offset":position,"pid":419}) #173 is the last one
     string = res.json()
     # print(string)
 
